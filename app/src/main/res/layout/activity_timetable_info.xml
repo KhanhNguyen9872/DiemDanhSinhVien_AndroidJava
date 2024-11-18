@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@color/light_gray"
+    android:gravity="center">
+
+    <!-- Timetable Title -->
+    <TextView
+        android:id="@+id/timetableName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tên môn học"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textSize="28sp"
+        android:textColor="@color/primary_color"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:id="@+id/happening"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="(Đang diễn ra)"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textColor="@color/primary_color"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Room Name -->
+    <TextView
+        android:id="@+id/roomName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Phòng: B000"
+        android:textSize="16sp"
+        android:textColor="@color/secondary_text"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- Time Start and Time End -->
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thời gian: 00:00 - 12:00"
+        android:textSize="16sp"
+        android:textColor="@color/secondary_text"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- Start Date -->
+    <TextView
+        android:id="@+id/startDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ngày học: 01/01/2024"
+        android:textSize="16sp"
+        android:textColor="@color/secondary_text"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Professor Info -->
+    <TextView
+        android:id="@+id/professorInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Giảng viên: Nguyễn Văn A\nSố điện thoại: 0123456789\nEmail: a@localhost.com"
+        android:textSize="16sp"
+        android:textColor="@color/secondary_text"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Roll Call Button -->
+    <Button
+        android:id="@+id/rollCallButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Điểm danh"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/primary_color"
+        android:layout_marginBottom="16dp"
+        android:layout_gravity="center"/>
+
+    <!-- Roll Call Status Label -->
+    <TextView
+        android:id="@+id/rollCallStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bạn chưa điểm danh"
+        android:textSize="16sp"
+        android:textColor="@color/red"
+        android:layout_gravity="center"/>
+
+</LinearLayout>

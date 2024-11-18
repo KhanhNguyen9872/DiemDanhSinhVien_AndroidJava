@@ -43,24 +43,32 @@ public class PointAdapter extends RecyclerView.Adapter<PointAdapter.ClassViewHol
 
         holder.timetableName.setText(timetable.getName());
         holder.pointMid.setText("Giữa kì: " + point.getMidPoint() + "đ");
-        if (point.getLastPoint() == -1) {
+        if (point.getMidPoint() == -1) {
+            int percent = 0;
+            holder.progressBar.setProgress(percent);
+            holder.percent.setText("Đạt: " + percent + "%");
+
+            holder.pointMid.setText("");
+            holder.pointLast.setText("");
+            holder.pointFinal.setText("");
+        } else if (point.getLastPoint() == -1) {
             holder.pointLast.setText("");
             holder.pointFinal.setText("");
 
             int percent = (int) (point.getMidPoint() / 10 * 50);
             holder.progressBar.setProgress(percent);
-            holder.percent.setText("Hoàn thành: " + percent + "%");
+            holder.percent.setText("Đạt: " + percent + "%");
         } else {
             holder.pointLast.setText("Cuối kì: " + point.getLastPoint() + "đ");
             holder.pointFinal.setText("Tổng: " + (point.getMidPoint() + point.getLastPoint()) / 2 + "đ");
 
             if (point.getMidPoint() == 0 && point.getLastPoint() == 0) {
                 holder.progressBar.setProgress(0);
-                holder.percent.setText("Hoàn thành: " + "0%");
+                holder.percent.setText("Đạt: " + "0%");
             } else {
                 float percent = (point.getMidPoint() + point.getLastPoint()) / 2 / 10 * 100;
                 holder.progressBar.setProgress((int) percent);
-                holder.percent.setText("Hoàn thành: " + percent + "%");
+                holder.percent.setText("Đạt: " + percent + "%");
             }
         }
 

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.security.auth.Subject;
 
@@ -36,6 +37,7 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
     private final String POINT_TABLE_NAME = "point";
     private final String SEMESTER_TABLE_NAME = "semester";
     private final String FACULTY_TABLE_NAME = "faculty";
+    private final String ROLLCALL_TABLE_NAME = "rollcall";
 
     private SinhVienSQLite(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -75,6 +77,7 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + PROFESSOR_TABLE_NAME + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "fullName TEXT, " +
+                "numberPhone TEXT, " +
                 "gender INTEGER, " +
                 "email TEXT);"
         );
@@ -128,6 +131,16 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
                 "username TEXT, " +
                 "password TEXT, " +
                 "studentId INTEGER, " +
+                "FOREIGN KEY(studentId) REFERENCES " + STUDENT_TABLE_NAME + "(id)" +
+                ");"
+        );
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + ROLLCALL_TABLE_NAME + " (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "date DATE, " +
+                "timetableId INTEGER, " +
+                "studentId INTEGER, " +
+                "FOREIGN KEY(timetableId) REFERENCES " + TIMETABLE_TABLE_NAME + "(id), " +
                 "FOREIGN KEY(studentId) REFERENCES " + STUDENT_TABLE_NAME + "(id)" +
                 ");"
         );
@@ -194,6 +207,13 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
             insertTimetable("Lập trình ứng dụng với Java", 4, 1, "13:15", "16:45", 4, "E208", "12/09/2024", "21/11/2024", 6);
             insertTimetable("Phong cách làm việc chuyên nghiệp", 5, 1, "13:15", "16:45", 5, "B402", "13/09/2024", "22/11/2024", 6);
             insertTimetable("Thiết kế và xây dựng phần mềm", 6, 1, "13:15", "16:45", 6, "E304", "14/09/2024", "23/11/2024", 6);
+
+            insertTimetable("Cấu trúc dữ liệu và giải thuật", 11, 1, "12:25", "15:55", 1, "E405", "15/01/2024", "22/04/2024", 4);
+            insertTimetable("Hệ quản trị cơ sở dữ liệu", 12, 1, "12:25", "15:55", 2, "E306", "16/01/2024", "09/04/2024", 4);
+            insertTimetable("Kỹ năng mềm", 13, 1, "12:25", "15:55", 3, "B105", "24/01/2024", "10/04/2024", 4);
+            insertTimetable("Lịch sử Đảng Cộng sản Việt Nam", 16, 1, "12:25", "15:55", 4, "B105", "18/01/2024", "14/03/2024", 4);
+            insertTimetable("Mạng máy tính", 15, 1, "12:25", "15:55", 5, "B105", "19/01/2024", "12/04/2024", 4);
+            insertTimetable("Yêu cầu phần mềm", 14, 1, "12:25", "15:55", 6, "B105", "20/01/2024", "30/03/2024", 4);
         }
         cursor.close();
     }
@@ -203,17 +223,24 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
         Cursor cursor = db.query(PROFESSOR_TABLE_NAME, null, null, null, null, null, null);
 
         if (cursor.getCount() == 0) {
-            insertProfessor("Ngô Kim Phượng", 0, "ngokimphuong@localhost.com");
-            insertProfessor("Châu Trần Trúc Ly", 0, "chautrantrucly@localhost.com");
-            insertProfessor("Tạ Chí Qui Nhơn", 0, "tachiquinhon@localhost.com");
-            insertProfessor("Nguyễn Thành Sơn", 1, "nguyentheson@localhost.com");
-            insertProfessor("Nguyễn Thị Thu Hà", 0, "nguyenthithuha@localhost.com");
-            insertProfessor("Lê Huỳnh Phước", 1, "lehuyenphuoc@localhost.com");
+            insertProfessor("Ngô Kim Phượng", 0, "ngokimphuong@localhost.com", "0123456789");
+            insertProfessor("Châu Trần Trúc Ly", 0, "chautrantrucly@localhost.com", "0123456789");
+            insertProfessor("Tạ Chí Qui Nhơn", 0, "tachiquinhon@localhost.com", "0123456789");
+            insertProfessor("Nguyễn Thành Sơn", 1, "nguyentheson@localhost.com", "0123456789");
+            insertProfessor("Nguyễn Thị Thu Hà", 0, "nguyenthithuha@localhost.com", "0123456789");
+            insertProfessor("Lê Huỳnh Phước", 1, "lehuyenphuoc@localhost.com", "0123456789");
 
-            insertProfessor("Đinh Hoàng Gia", 1, "dinhhoanggia@localhost.com");
-            insertProfessor("Đặng Quốc Phong", 1, "dangquocphong@localhost.com");
-            insertProfessor("Nguyễn Minh Nhựt", 1, "nguyenminhnhut@localhost.com");
-            insertProfessor("Nguyễn Thị Tuyết Thảo", 0, "nguyenthituyetthao@localhost.com");
+            insertProfessor("Đinh Hoàng Gia", 1, "dinhhoanggia@localhost.com", "0123456789");
+            insertProfessor("Đặng Quốc Phong", 1, "dangquocphong@localhost.com", "0123456789");
+            insertProfessor("Nguyễn Minh Nhựt", 1, "nguyenminhnhut@localhost.com", "0123456789");
+            insertProfessor("Nguyễn Thị Tuyết Thảo", 0, "nguyenthituyetthao@localhost.com", "0123456789");
+
+            insertProfessor("Trịnh Đình Yến", 1, "trinhdinhyen@localhost.com", "0123456789");
+            insertProfessor("Trần Hoài Thuận", 1, "tranhoaithuan@localhost.com", "0123456789");
+            insertProfessor("Lê Ngọc Danh", 1, "lengocdanh@localhost.com", "0123456789");
+            insertProfessor("Trương Bá Vĩnh", 1, "truongbavinh@localhost.com", "0123456789");
+            insertProfessor("Hồ Quý Thuận", 1, "hoquythuan@localhost.com", "0123456789");
+            insertProfessor("Trần Lam Hạnh", 0, "tranlamhanh@localhost.com", "0123456789");
         }
         cursor.close();
     }
@@ -227,7 +254,29 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
         prepareDataStudent();
         prepareDataPoint();
         prepareDataAccount();
+        prepareDataRollCall();
     }
+
+    private void prepareDataRollCall() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.query(ROLLCALL_TABLE_NAME, null, null, null, null, null, null);
+        if (cursor.getCount() == 0) {
+            // insertRollCall(new Date(), 1, 1);
+        }
+        cursor.close();
+    }
+
+    private void insertRollCall(Date date, int studentId, int timetableId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put("date", dateFormat.format(date));
+        values.put("studentId", studentId);
+        values.put("timetableId", timetableId);
+        db.insert(ROLLCALL_TABLE_NAME, null, values);
+        db.close();
+    }
+
 
     private void prepareDataFaculty() {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -280,28 +329,36 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.query(POINT_TABLE_NAME, null, null, null, null, null, null);
         if (cursor.getCount() == 0) {
-            insertPoint(9, 10, 1, 1);
-            insertPoint(9.5, 9.5, 1, 2);
-            insertPoint(9, 10, 1, 3);
-            insertPoint(10, 9, 1, 4);
-            insertPoint(9, 9.5, 1, 5);
+            insertPoint(9, 8.5, 1, 1);
+            insertPoint(9, 8.5, 1, 2);
+            insertPoint(9.5, 9.5, 1, 3);
+            insertPoint(8.5, 8.5, 1, 4);
+            insertPoint(8.6, 7, 1, 5);
 
-            insertPoint(9, -1, 1, 6);
-            insertPoint(9.5, -1, 1, 7);
-            insertPoint(9, -1, 1, 8);
+            insertPoint(7.5, -1, 1, 6);
+            insertPoint(10, -1, 1, 7);
+            insertPoint(9.8, -1, 1, 8);
             insertPoint(10, -1, 1, 9);
-            insertPoint(9, -1, 1, 10);
+            insertPoint(-1, -1, 1, 10);
+            insertPoint(8.5, -1, 1, 11);
+
+            insertPoint(8, 9.5, 1, 12);
+            insertPoint(9.5, 8, 1, 13);
+            insertPoint(9, 9.2, 1, 14);
+            insertPoint(8, 7.5, 1, 15);
+            insertPoint(10, 8.5, 1, 16);
+            insertPoint(7.6, 7, 1, 17);
         }
         cursor.close();
     }
 
-    private void insertPoint(double pointMid, double pointLast, int i1, int i2) {
+    private void insertPoint(double pointMid, double pointLast, int studentId, int timetableId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("pointMid", pointMid);
         values.put("pointLast", pointLast);
-        values.put("studentId", i1);
-        values.put("timetableId", i2);
+        values.put("studentId", studentId);
+        values.put("timetableId", timetableId);
         db.insert(POINT_TABLE_NAME, null, values);
         db.close();
     }
@@ -410,12 +467,13 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void insertProfessor(String fullName, int gender, String email) {
+    public void insertProfessor(String fullName, int gender, String email, String numberPhone) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("fullName", fullName);
         values.put("gender", gender);
         values.put("email", email);
+        values.put("numberPhone", numberPhone);
         db.insert(PROFESSOR_TABLE_NAME, null, values);
         db.close();
     }
@@ -463,7 +521,7 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
 
         Cursor cursor = db.query(
                 PROFESSOR_TABLE_NAME,
-                new String[]{"fullName", "gender", "email"},
+                new String[]{"fullName", "gender", "numberPhone", "email"},
                 "id = ?",
                 new String[]{String.valueOf(id)},
 
@@ -474,6 +532,7 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
             professor.setId(id);
             professor.setFullName(cursor.getString(cursor.getColumnIndexOrThrow("fullName")));
             professor.setGender(cursor.getInt(cursor.getColumnIndexOrThrow("gender")));
+            professor.setNumberPhone(cursor.getString(cursor.getColumnIndexOrThrow("numberPhone")));
             professor.setEmail(cursor.getString(cursor.getColumnIndexOrThrow("email")));
         }
 
@@ -700,5 +759,69 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
         }
 
         return faculty;
+    }
+
+    public boolean isRollCall(Date date, int studentId, int timetableId) {
+        boolean check = false;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String dateString = sdf.format(date);
+
+        Cursor cursor = db.query(
+                ROLLCALL_TABLE_NAME,
+                null,
+                "date = ? AND studentId = ? AND timetableId = ?",
+                new String[]{dateString, String.valueOf(studentId), String.valueOf(timetableId)},
+                null, null, null
+        );
+
+        if (cursor.moveToFirst()) {
+            check = true;
+        }
+
+        return check;
+    }
+
+    public void rollCall(Date date2, int studentId, int timetableId) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String dateString = sdf.format(date2);
+
+        System.out.println("date2: " + dateString);
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("date", dateString);
+        values.put("studentId", studentId);
+        values.put("timetableId", timetableId);
+        db.insert(ROLLCALL_TABLE_NAME, null, values);
+        db.close();
+
+    }
+
+    public void changePassword(int accountId, String newPassword) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("password", newPassword);
+        db.update(ACCOUNT_TABLE_NAME, values, "id = ?", new String[]{String.valueOf(accountId)});
+        db.close();
+    }
+
+    public boolean checkPassword(int accountId, String string) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(
+                ACCOUNT_TABLE_NAME,
+                new String[]{"password"},
+                "id = ?",
+                new String[]{String.valueOf(accountId)},
+                null, null, null
+        );
+        if (cursor.moveToFirst()) {
+            String password = cursor.getString(cursor.getColumnIndexOrThrow("password"));
+            if (password.equals(string)) {
+                return true;
+            }
+            }
+        return false;
+
     }
 }

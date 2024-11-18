@@ -9,6 +9,7 @@
     android:background="?attr/selectableItemBackground">
 
     <LinearLayout
+        android:id="@+id/cartItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -36,8 +37,17 @@
                 android:id="@+id/className"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Subject Name"
-                android:textSize="18sp"
+                android:text="Môn học"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#212121" />
+
+            <TextView
+                android:id="@+id/status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trạng thái"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="#212121" />
 
@@ -51,7 +61,7 @@
                     android:id="@+id/classDetails"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Teacher Name"
+                    android:text="Tên giảng viên"
                     android:textSize="14sp"
                     android:textColor="#757575" />
 

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/notification_background"
+    android:elevation="4dp"
+    android:clickable="true"
+    android:focusable="true">
+
+    <!-- Icon -->
+    <ImageView
+        android:id="@+id/notificationIcon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_notification"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="16dp" />
+
+    <!-- Notification Text -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/notificationTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Message"
+            android:textSize="16sp"
+            android:textColor="#333"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/notificationDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="You have received a new message."
+            android:textSize="14sp"
+            android:textColor="#666"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -2,4 +2,11 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="light_gray">#F7F7F7</color>
+    <color name="primary_color">#4CAF50</color>
+    <color name="secondary_text">#666666</color>
+    <color name="red">#FF5722</color>
+    <color name="purple_500">#9C27B0</color> <!-- Material Design Purple 500 -->
+    <color name="purple_700">#7B1FA2</color> <!-- Darker Purple -->
+    <color name="purple_200">#E1BEE7</color> <!-- Lighter Purple -->
 </resources>

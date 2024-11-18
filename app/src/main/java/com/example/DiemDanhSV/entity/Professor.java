@@ -4,10 +4,19 @@ public class Professor {
     private int id;
     private String fullName;
     private int gender;
+    private String numberPhone;
     private String email;
 
     public Professor() {
 
+    }
+
+    public String getNumberPhone() {
+        return numberPhone;
+    }
+
+    public void setNumberPhone(String numberPhone) {
+        this.numberPhone = numberPhone;
     }
 
     public int getId() {

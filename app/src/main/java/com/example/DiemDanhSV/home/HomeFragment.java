@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
     private TimetableAdapter timetableAdapter;
     private SinhVienSQLite sinhVienSQLite;
     private int accountId;
@@ -75,7 +76,6 @@ public class HomeFragment extends Fragment {
                 c.set(Calendar.DAY_OF_WEEK, c.getFirstDayOfWeek()); // Get the first day of the week (Monday)
 
                 Date startDate = c.getTime(); // Get the first day of the week
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
                 // Get the last day of the week (add 6 days)
                 c.add(Calendar.DATE, 6);
@@ -145,19 +145,28 @@ public class HomeFragment extends Fragment {
         // Example data
         timetableList = this.sinhVienSQLite.getAllTimetable(this.classId);
 
-        timetableAdapter = new TimetableAdapter(timetableList);
+        timetableAdapter = new TimetableAdapter(timetableList, this.classId);
 
         // Set up RecyclerView
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(timetableAdapter);
 
-        Date startDate = calendar.getTime(); // Get the first day of the week
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        // Calculate week number
+        int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
+
+        // Update TextView to show the week number
+        Calendar c = Calendar.getInstance();
+        c.setFirstDayOfWeek(Calendar.MONDAY);
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+        c.set(Calendar.DAY_OF_WEEK, c.getFirstDayOfWeek()); // Get the first day of the week (Monday)
+
+        Date startDate = c.getTime(); // Get the first day of the week
 
         // Get the last day of the week (add 6 days)
-        calendar.add(Calendar.DATE, 6);
-        Date endDate = calendar.getTime();
+        c.add(Calendar.DATE, 6);
+        Date endDate = c.getTime();
 
         // Format the dates to display them in TextView
         String startDateStr = dateFormat.format(startDate);
@@ -190,10 +199,15 @@ public class HomeFragment extends Fragment {
 
                 // Check if the subject is within the selected week using the new comparison method
                 if (isSubjectInWeek(startTimetable, endTimetable, currentWeekStart, currentWeekEnd)) {
-                    Calendar c = Calendar.getInstance();
-                    c.add(Calendar.DATE, timetable.getDayOfWeek() - 1);
+                    Calendar c2 = Calendar.getInstance();
+                    c2.setFirstDayOfWeek(Calendar.MONDAY);
+                    c2.set(Calendar.YEAR, year);
+                    c2.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+                    c2.set(Calendar.DAY_OF_WEEK, c2.getFirstDayOfWeek());
 
-                    Date currentDayOfWeek = c.getTime();
+                    c2.add(Calendar.DATE, timetable.getDayOfWeek() - 1);
+
+                    Date currentDayOfWeek = c2.getTime();
                     timetable.setCurrentDayOfWeek(currentDayOfWeek);
 
                     timetableList.add(timetable);

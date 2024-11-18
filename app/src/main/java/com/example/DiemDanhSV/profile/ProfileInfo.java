@@ -73,5 +73,10 @@ public class ProfileInfo extends AppCompatActivity {
             radioButtonBoy.setChecked(false);
         }
 
+        changePasswordButton.setOnClickListener(v -> {
+            Intent intent1 = new Intent(ProfileInfo.this, ChangePassword.class);
+            intent1.putExtra("accountId", accountId);
+            startActivity(intent1);
+        });
     }
 }
