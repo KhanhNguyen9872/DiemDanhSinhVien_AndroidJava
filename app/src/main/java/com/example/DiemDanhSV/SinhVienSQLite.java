@@ -98,7 +98,8 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
         );
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + STUDENT_TABLE_NAME + " (" +
-                "id INTEGER PRIMARY KEY, " +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "mssv INTEGER, " +
                 "firstName TEXT, " +
                 "lastName TEXT, " +
                 "numberPhone TEXT, " +
@@ -124,6 +125,7 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + ACCOUNT_TABLE_NAME + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "username TEXT, " +
                 "password TEXT, " +
                 "studentId INTEGER, " +
                 "FOREIGN KEY(studentId) REFERENCES " + STUDENT_TABLE_NAME + "(id)" +
@@ -161,7 +163,7 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
             // Convert Calendar to Date
             Date joinDay = calendar.getTime();
 
-            insertStudent(22150129, "Khánh", "Nguyễn", "0937927513", 1, 1, 1, birthday, joinDay);
+            insertStudent( 22150129, "Khánh", "Nguyễn", "0937927513", 1, 1, 1, birthday, joinDay);
         }
         cursor.close();
     }
@@ -170,7 +172,7 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.query(ACCOUNT_TABLE_NAME, null, null, null, null, null, null);
         if (cursor.getCount() == 0) {
-            insertAccount( 22150129, "khanhnguyen");
+            insertAccount("22150129", "khanhnguyen");
         }
         cursor.close();
     }
@@ -321,7 +323,7 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
     public void insertStudent(int mssv, String firstName, String lastName, String numberPhone, int gender, int classId, int facultyId, Date birthday, Date joinDay) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("id", mssv);
+        values.put("mssv", mssv);
         values.put("firstName", firstName);
         values.put("lastName", lastName);
         values.put("numberPhone", numberPhone);
@@ -352,11 +354,12 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void insertAccount(int studentId, String password) {
+    public void insertAccount(String username, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("studentId", studentId);
+        values.put("username", username);
         values.put("password", password);
+        values.put("studentId", 1);
         db.insert(ACCOUNT_TABLE_NAME, null, values);
         db.close();
     }
@@ -381,15 +384,15 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(
                 ACCOUNT_TABLE_NAME,
-                new String[]{"id", "studentId"},
-                "studentId = ? AND password = ?",
+                new String[]{"id", "username"},
+                "username = ? AND password = ?",
                 new String[]{String.valueOf(mssv), password},
                 null, null, null
         );
 
         int id = -1;
         if (cursor.moveToFirst()) {
-            String name = cursor.getString(cursor.getColumnIndexOrThrow("studentId"));
+            String name = cursor.getString(cursor.getColumnIndexOrThrow("username"));
             if (name.equals(String.valueOf(mssv))) {
                 id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
             }
@@ -484,7 +487,7 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
 
         Cursor cursor = db.query(
                 STUDENT_TABLE_NAME,
-                new String[]{"firstName", "lastName", "numberPhone", "gender", "classId", "facultyId", "birthday", "joinDay"},
+                new String[]{"mssv", "firstName", "lastName", "numberPhone", "gender", "classId", "facultyId", "birthday", "joinDay"},
                 "id = ?",
                 new String[]{String.valueOf(id)},
                 null, null, null
@@ -493,6 +496,7 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             try {
                 student.setId(id);
+                student.setMssv(cursor.getInt(cursor.getColumnIndexOrThrow("mssv")));
                 student.setFirstName(cursor.getString(cursor.getColumnIndexOrThrow("firstName")));
                 student.setLastName(cursor.getString(cursor.getColumnIndexOrThrow("lastName")));
                 student.setPhoneNumber(cursor.getString(cursor.getColumnIndexOrThrow("numberPhone")));

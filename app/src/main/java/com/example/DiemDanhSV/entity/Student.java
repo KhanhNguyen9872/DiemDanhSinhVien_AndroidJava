@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class Student {
     private int id;
+    private int mssv;
     private String firstName;
     private String lastName;
     private String phoneNumber;
@@ -19,6 +20,14 @@ public class Student {
 
     public String getPhoneNumber() {
         return phoneNumber;
+    }
+
+    public int getMssv() {
+        return mssv;
+    }
+
+    public void setMssv(int mssv) {
+        this.mssv = mssv;
     }
 
     public void setPhoneNumber(String phoneNumber) {

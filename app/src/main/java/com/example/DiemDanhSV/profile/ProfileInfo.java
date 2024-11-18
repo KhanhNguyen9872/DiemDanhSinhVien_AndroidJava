@@ -56,7 +56,7 @@ public class ProfileInfo extends AppCompatActivity {
 
         Faculty faculty = sinhVienSQLite.getInfoFacultyByID(student.getFacultyId());
 
-        editTextMSSV.setText(String.valueOf(student.getId()));
+        editTextMSSV.setText(String.valueOf(student.getMssv()));
         editTextFirstName.setText(student.getFirstName());
         editTextLastName.setText(student.getLastName());
         editTextPhoneNumber.setText(student.getPhoneNumber());
