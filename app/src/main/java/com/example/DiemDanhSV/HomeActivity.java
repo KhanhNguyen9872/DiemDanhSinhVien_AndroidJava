@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.DiemDanhSV.home.HomeFragment;
+import com.example.DiemDanhSV.ketQuaHocTap.KetQuaHocLapFragment;
 import com.example.DiemDanhSV.profile.ProfileFragment;
 import com.example.lap23.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -22,6 +23,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class HomeActivity extends AppCompatActivity {
     private Fragment homeFragment;
     private Fragment profileFragment;
+    private Fragment ketQuaHocTapFragment;
     private int accountId;
     private int studentId;
 
@@ -36,12 +38,13 @@ public class HomeActivity extends AppCompatActivity {
 
         homeFragment = new HomeFragment(this.accountId, this.studentId);
         profileFragment = new ProfileFragment(this.accountId, this.studentId);
+        ketQuaHocTapFragment = new KetQuaHocLapFragment(this.accountId, this.studentId);
 
         setContentView(R.layout.activity_homescreen);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setTitle("Trang chủ");
+        getSupportActionBar().setTitle("Lịch theo tuần");
         loadFragment(homeFragment);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -51,12 +54,16 @@ public class HomeActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int itemId = item.getItemId();
                 if (itemId == R.id.navigation_home) {
-                    getSupportActionBar().setTitle("Trang chủ");
+                    getSupportActionBar().setTitle("Lịch theo tuần");
                     loadFragment(homeFragment);
                     return true;
                 } else if (itemId == R.id.navigation_profile) {
                     getSupportActionBar().setTitle("Thông tin sinh viên");
                     loadFragment(profileFragment);
+                    return true;
+                } else if (itemId == R.id.ketQuaHocTap) {
+                    getSupportActionBar().setTitle("Kết quả học tập");
+                    loadFragment(ketQuaHocTapFragment);
                     return true;
                 }
                 return false;

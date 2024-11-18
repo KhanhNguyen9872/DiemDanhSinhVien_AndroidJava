@@ -46,15 +46,44 @@
         android:textStyle="bold"
         android:layout_gravity="center" />
 
+
     <!-- First Name -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="16dp">
+        android:paddingTop="8dp">
 
         <TextView
-            android:id="@+id/labelFirstName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MSSV: "
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:layout_marginEnd="8dp" />
+
+        <EditText
+            android:id="@+id/editTextMSSV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:cursorVisible="false"
+            android:textIsSelectable="true"
+            android:textColor="#000000"
+            android:background="#D3D3D3"
+            android:padding="8dp"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp">
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tên của bạn:"
@@ -67,6 +96,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:cursorVisible="false"
+            android:textIsSelectable="true"
             android:textColor="#000000"
             android:background="#D3D3D3"
             android:padding="8dp"
@@ -81,7 +114,6 @@
         android:paddingTop="8dp">
 
         <TextView
-            android:id="@+id/labelLastName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Họ của bạn: "
@@ -94,7 +126,68 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Enter last name"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:cursorVisible="false"
+            android:textIsSelectable="true"
+            android:textColor="#000000"
+            android:background="#D3D3D3"
+            android:padding="8dp"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ngày sinh: "
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:layout_marginEnd="8dp" />
+
+        <EditText
+            android:id="@+id/editTextNgaySinh"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:cursorVisible="false"
+            android:textIsSelectable="true"
+            android:textColor="#000000"
+            android:background="#D3D3D3"
+            android:padding="8dp"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Số điện thoại: "
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:layout_marginEnd="8dp" />
+
+        <EditText
+            android:id="@+id/editTextNumberPhone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:cursorVisible="false"
+            android:textIsSelectable="true"
             android:textColor="#000000"
             android:background="#D3D3D3"
             android:padding="8dp"
@@ -109,7 +202,6 @@
         android:paddingTop="8dp">
 
         <TextView
-            android:id="@+id/labelGender"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Giới tính:"
@@ -144,6 +236,35 @@
         </RadioGroup>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Khoa: "
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:layout_marginEnd="8dp" />
+
+        <EditText
+            android:id="@+id/editTextFaculty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:cursorVisible="false"
+            android:textIsSelectable="true"
+            android:textColor="#000000"
+            android:background="#D3D3D3"
+            android:padding="8dp"
+            android:textSize="16sp" />
+    </LinearLayout>
+
     <!-- Class Name -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -152,10 +273,9 @@
         android:paddingTop="8dp">
 
         <TextView
-            android:id="@+id/labelClassName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lớp:"
+            android:text="Lớp: "
             android:textColor="#000000"
             android:textSize="16sp"
             android:layout_marginEnd="8dp" />
@@ -165,6 +285,39 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:cursorVisible="false"
+            android:textIsSelectable="true"
+            android:textColor="#000000"
+            android:background="#D3D3D3"
+            android:padding="8dp"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ngày vào trường: "
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:layout_marginEnd="8dp" />
+
+        <EditText
+            android:id="@+id/editTextNgayVaoTruong"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:cursorVisible="false"
+            android:textIsSelectable="true"
             android:textColor="#000000"
             android:background="#D3D3D3"
             android:padding="8dp"

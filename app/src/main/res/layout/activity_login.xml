@@ -44,7 +44,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Tên đăng nhập"
+            android:hint="MSSV"
             app:hintTextColor="#333"
             app:boxStrokeColor="#000000"
             app:boxBackgroundMode="outline">

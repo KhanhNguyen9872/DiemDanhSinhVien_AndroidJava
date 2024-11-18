@@ -2,54 +2,65 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.DiemDanhSV.home.HomeFragment">
+    tools:context="com.example.DiemDanhSV.ketQuaHocTap.KetQuaHocLapFragment">
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:background="#F5F5F5">
 
-        <!-- Title Bar -->
+        <!-- Title -->
         <TextView
-            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="LỊCH HỌC"
+            android:text="Kết quả học tập"
             android:textSize="24sp"
-            android:gravity="center"
             android:textStyle="bold"
-            android:paddingBottom="8dp" />
+            android:gravity="center"
+            android:textColor="#000"
+            android:padding="8dp"
+            android:background="#FF9800"
+            android:elevation="4dp"
+            android:textAllCaps="true" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:layout_gravity="center"
             android:gravity="center">
 
             <TextView
-                android:id="@+id/weekTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Từ 11/11 đến 17/11"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:layout_marginRight="10dp"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/selectDateButton"
                 android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Chọn học kì: "
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#000">
+
+            </TextView>
+            <Spinner
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:id="@+id/spinnerHocKi"
+                android:layout_marginRight="10dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Chọn" />
+                android:layout_weight="1"/>
         </LinearLayout>
 
         <TextView
-            android:id="@+id/khongCoLichHoc"
-            android:text="Không có lịch học trong tuần này"
+            android:id="@+id/khongCoKetQuaHocTap"
+            android:text="Không có kết quả học tập của học kì này"
             android:layout_gravity="center"
-            android:textSize="24sp"
+            android:textSize="28sp"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
             android:textColor="#FF2424"
@@ -67,8 +78,6 @@
             android:layout_height="wrap_content"
             android:clipToPadding="false"
             android:paddingBottom="60dp" />
-
     </LinearLayout>
-
 
 </FrameLayout>

@@ -19,10 +19,8 @@ import com.example.DiemDanhSV.SinhVienSQLite;
 import com.example.DiemDanhSV.entity.Timetable;
 import com.example.DiemDanhSV.entity.TimetableAdapter;
 import com.example.lap23.R;
-import android.util.Log;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -50,6 +48,7 @@ public class HomeFragment extends Fragment {
 
         Button selectDateButton = view.findViewById(R.id.selectDateButton);
         TextView weekTextView = view.findViewById(R.id.weekTextView);
+        TextView khongCoLichHoc = view.findViewById(R.id.khongCoLichHoc);
 
         final Calendar calendar = Calendar.getInstance();
         calendar.setFirstDayOfWeek(Calendar.MONDAY);  // Set Monday as the first day of the week
@@ -113,12 +112,29 @@ public class HomeFragment extends Fragment {
 
                         // Check if the subject is within the selected week using the new comparison method
                         if (isSubjectInWeek(startTimetable, endTimetable, currentWeekStart, currentWeekEnd)) {
+                            Calendar c2 = Calendar.getInstance();
+                            c2.setFirstDayOfWeek(Calendar.MONDAY);
+                            c2.set(Calendar.YEAR, year);
+                            c2.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+                            c2.set(Calendar.DAY_OF_WEEK, c2.getFirstDayOfWeek());
+
+                            c2.add(Calendar.DATE, timetable.getDayOfWeek() - 1);
+
+                            Date currentDayOfWeek = c2.getTime();
+                            timetable.setCurrentDayOfWeek(currentDayOfWeek);
+
                             timetableList.add(timetable);
                         }
 
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
+                }
+
+                if (timetableList.size() == 0) {
+                    khongCoLichHoc.setVisibility(View.VISIBLE);
+                } else {
+                    khongCoLichHoc.setVisibility(View.GONE);
                 }
 
                 this.timetableAdapter.notifyDataSetChanged();
@@ -135,6 +151,66 @@ public class HomeFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(timetableAdapter);
+
+        Date startDate = calendar.getTime(); // Get the first day of the week
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        // Get the last day of the week (add 6 days)
+        calendar.add(Calendar.DATE, 6);
+        Date endDate = calendar.getTime();
+
+        // Format the dates to display them in TextView
+        String startDateStr = dateFormat.format(startDate);
+        String endDateStr = dateFormat.format(endDate);
+
+        // Display the formatted dates
+        weekTextView.setText("Từ " + startDateStr + " đến " + endDateStr);
+
+        Calendar currentWeekStart = Calendar.getInstance();
+        currentWeekStart.setFirstDayOfWeek(Calendar.MONDAY);
+        currentWeekStart.setTime(startDate);  // 09/12/2024
+
+        Calendar currentWeekEnd = Calendar.getInstance();
+        currentWeekEnd.setFirstDayOfWeek(Calendar.MONDAY);
+        currentWeekEnd.setTime(endDate);   // 15/12/2024
+
+        // Clear the timetable list and add subjects that fall within the week
+        timetableList.clear();
+        List<Timetable> newList = this.sinhVienSQLite.getAllTimetable(this.classId);
+        for (Timetable timetable : newList) {
+            try {
+                Date startDateTimetable = timetable.getDateStart();
+                Date endDateTimetable = timetable.getDateEnd();
+
+                Calendar startTimetable = Calendar.getInstance();
+                startTimetable.setTime(startDateTimetable);
+
+                Calendar endTimetable = Calendar.getInstance();
+                endTimetable.setTime(endDateTimetable);
+
+                // Check if the subject is within the selected week using the new comparison method
+                if (isSubjectInWeek(startTimetable, endTimetable, currentWeekStart, currentWeekEnd)) {
+                    Calendar c = Calendar.getInstance();
+                    c.add(Calendar.DATE, timetable.getDayOfWeek() - 1);
+
+                    Date currentDayOfWeek = c.getTime();
+                    timetable.setCurrentDayOfWeek(currentDayOfWeek);
+
+                    timetableList.add(timetable);
+                }
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        if (timetableList.size() == 0) {
+            khongCoLichHoc.setVisibility(View.VISIBLE);
+        } else {
+            khongCoLichHoc.setVisibility(View.GONE);
+        }
+
+        this.timetableAdapter.notifyDataSetChanged();
 
         return view;
     }

@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.DiemDanhSV.entity.Class;
+import com.example.DiemDanhSV.entity.Faculty;
+import com.example.DiemDanhSV.entity.Point;
 import com.example.DiemDanhSV.entity.Professor;
 import com.example.DiemDanhSV.entity.Student;
 import com.example.DiemDanhSV.entity.Timetable;
@@ -14,9 +16,14 @@ import com.example.DiemDanhSV.entity.Timetable;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import javax.security.auth.Subject;
+
 public class SinhVienSQLite extends SQLiteOpenHelper {
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
     private static SinhVienSQLite instance = null;
     private static final String DATABASE_NAME = "DiemDanhSinhVien.db";
     private static final int DATABASE_VERSION = 1;
@@ -26,6 +33,9 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
     private final String CLASS_TABLE_NAME = "class";
     private final String TIMETABLE_TABLE_NAME = "timetable";
     private final String PROFESSOR_TABLE_NAME = "professor";
+    private final String POINT_TABLE_NAME = "point";
+    private final String SEMESTER_TABLE_NAME = "semester";
+    private final String FACULTY_TABLE_NAME = "faculty";
 
     private SinhVienSQLite(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -44,6 +54,19 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + FACULTY_TABLE_NAME + " (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "name TEXT "  +
+                ");"
+        );
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + SEMESTER_TABLE_NAME + " (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "name TEXT, " +
+                "semester INTEGER" +
+                ");"
+        );
+
         db.execSQL("CREATE TABLE IF NOT EXISTS " + CLASS_TABLE_NAME + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "name TEXT);"
@@ -67,24 +90,40 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
                 "roomName TEXT, " +
                 "dateStart DATE, " +
                 "dateEnd DATE, " +
+                "semesterId INTEGER, " +
+                "FOREIGN KEY(semesterId) REFERENCES " + SEMESTER_TABLE_NAME + "(id), " +
                 "FOREIGN KEY(professorId) REFERENCES " + PROFESSOR_TABLE_NAME + "(id), " +
                 "FOREIGN KEY(classId) REFERENCES " + CLASS_TABLE_NAME + "(id)" +
                 ");"
         );
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + STUDENT_TABLE_NAME + " (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "id INTEGER PRIMARY KEY, " +
                 "firstName TEXT, " +
                 "lastName TEXT, " +
+                "numberPhone TEXT, " +
                 "gender INTEGER, " +
                 "img TEXT, " +
                 "classId INTEGER, " +
+                "facultyId INTEGER, " +
+                "birthday DATE, " +
+                "joinDay DATE, " +
                 "FOREIGN KEY(classId) REFERENCES " + CLASS_TABLE_NAME + "(id));"
+        );
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + POINT_TABLE_NAME + " (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "pointMid DOUBLE, " +
+                "pointLast DOUBLE, " +
+                "studentId INTEGER," +
+                "timetableId INTEGER," +
+                "FOREIGN KEY(studentId) REFERENCES " + STUDENT_TABLE_NAME + "(id)," +
+                "FOREIGN KEY(timetableId) REFERENCES " + TIMETABLE_TABLE_NAME + "(id)" +
+                ");"
         );
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + ACCOUNT_TABLE_NAME + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "username TEXT, " +
                 "password TEXT, " +
                 "studentId INTEGER, " +
                 "FOREIGN KEY(studentId) REFERENCES " + STUDENT_TABLE_NAME + "(id)" +
@@ -105,7 +144,24 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.query(STUDENT_TABLE_NAME, null, null, null, null, null, null);
         if (cursor.getCount() == 0) {
-            insertStudent("Khánh", "Nguyễn", 1, 1);
+            Calendar calendar = Calendar.getInstance();
+
+            // Set the desired date
+            calendar.set(Calendar.YEAR, 2004);
+            calendar.set(Calendar.MONTH, Calendar.FEBRUARY); // February is month 1 (0-based index)
+            calendar.set(Calendar.DAY_OF_MONTH, 7);
+
+            // Convert Calendar to Date
+            Date birthday = calendar.getTime();
+
+            calendar.set(Calendar.YEAR, 2022);
+            calendar.set(Calendar.MONTH, Calendar.OCTOBER); // February is month 1 (0-based index)
+            calendar.set(Calendar.DAY_OF_MONTH, 18);
+
+            // Convert Calendar to Date
+            Date joinDay = calendar.getTime();
+
+            insertStudent(22150129, "Khánh", "Nguyễn", "0937927513", 1, 1, 1, birthday, joinDay);
         }
         cursor.close();
     }
@@ -114,7 +170,7 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.query(ACCOUNT_TABLE_NAME, null, null, null, null, null, null);
         if (cursor.getCount() == 0) {
-            insertAccount("root", "root", 1);
+            insertAccount( 22150129, "khanhnguyen");
         }
         cursor.close();
     }
@@ -124,12 +180,18 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
         Cursor cursor = db.query(TIMETABLE_TABLE_NAME, null, null, null, null, null, null);
 
         if (cursor.getCount() == 0) {
-            insertTimetable("Anh văn chuyên ngành", 1, 1, "13:15", "16:45", 1, "E308", "09/09/2024", "18/11/2024");
-            insertTimetable("Công cụ và môi trường phát triển ứng dụng", 2, 1, "13:15", "16:45", 2, "E202", "10/09/2024", "19/11/2024");
-            insertTimetable("Lập trình cho thiết bị di động", 3, 1, "13:15", "16:45", 3, "B309", "11/09/2024", "20/11/2024");
-            insertTimetable("Lập trình ứng dụng với Java", 4, 1, "13:15", "16:45", 4, "E208", "12/09/2024", "21/11/2024");
-            insertTimetable("Phong cách làm việc chuyên nghiệp", 5, 1, "13:15", "16:45", 5, "B402", "13/09/2024", "22/11/2024");
-            insertTimetable("Thiết kế và xây dựng phần mềm", 6, 1, "13:15", "16:45", 6, "E304", "14/09/2024", "23/11/2024");
+            insertTimetable("Mẫu thiết kế cho phần mềm", 6, 1, "13:15", "16:45", 1, "E102", "20/05/2024", "22/07/2024", 5);
+            insertTimetable("Lập trình Web", 7, 1, "13:15", "16:45", 2, "E102", "21/05/2024", "23/07/2024", 5);
+            insertTimetable("Lập trình trực quan", 8, 1, "13:15", "16:45", 3, "E102", "22/05/2024", "24/07/2024", 5);
+            insertTimetable("Tư duy phản biện, tư duy tích cực và tư duy đổi mới sáng tạo", 9, 1, "13:15", "16:45", 4, "E102", "23/05/2024", "25/07/2024", 5);
+            insertTimetable("Tư tưởng Hồ Chí Minh", 10, 1, "13:15", "16:45", 5, "E102", "24/05/2024", "28/06/2024", 5);
+
+            insertTimetable("Anh văn chuyên ngành", 1, 1, "13:15", "16:45", 1, "E308", "09/09/2024", "18/11/2024", 6);
+            insertTimetable("Công cụ và môi trường phát triển ứng dụng", 2, 1, "13:15", "16:45", 2, "E202", "10/09/2024", "19/11/2024", 6);
+            insertTimetable("Lập trình cho thiết bị di động", 3, 1, "13:15", "16:45", 3, "B309", "11/09/2024", "20/11/2024", 6);
+            insertTimetable("Lập trình ứng dụng với Java", 4, 1, "13:15", "16:45", 4, "E208", "12/09/2024", "21/11/2024", 6);
+            insertTimetable("Phong cách làm việc chuyên nghiệp", 5, 1, "13:15", "16:45", 5, "B402", "13/09/2024", "22/11/2024", 6);
+            insertTimetable("Thiết kế và xây dựng phần mềm", 6, 1, "13:15", "16:45", 6, "E304", "14/09/2024", "23/11/2024", 6);
         }
         cursor.close();
     }
@@ -145,33 +207,129 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
             insertProfessor("Nguyễn Thành Sơn", 1, "nguyentheson@localhost.com");
             insertProfessor("Nguyễn Thị Thu Hà", 0, "nguyenthithuha@localhost.com");
             insertProfessor("Lê Huỳnh Phước", 1, "lehuyenphuoc@localhost.com");
+
+            insertProfessor("Đinh Hoàng Gia", 1, "dinhhoanggia@localhost.com");
+            insertProfessor("Đặng Quốc Phong", 1, "dangquocphong@localhost.com");
+            insertProfessor("Nguyễn Minh Nhựt", 1, "nguyenminhnhut@localhost.com");
+            insertProfessor("Nguyễn Thị Tuyết Thảo", 0, "nguyenthituyetthao@localhost.com");
         }
         cursor.close();
     }
 
     public void initData() {
+        prepareDataFaculty();
+        prepareDataSemester();
         prepareDataClass();
         prepareDataProfessor();
         prepareDataTimetable();
         prepareDataStudent();
+        prepareDataPoint();
         prepareDataAccount();
     }
 
+    private void prepareDataFaculty() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.query(FACULTY_TABLE_NAME, null, null, null, null, null, null);
+
+        if (cursor.getCount() == 0) {
+            insertFaculty("Công nghệ thông tin");
+            insertFaculty("Ngôn ngữ");
+            insertFaculty("Đông phương học");
+            insertFaculty("Marketing");
+        }
+        cursor.close();
+    }
+
+    private void insertFaculty(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        db.insert(FACULTY_TABLE_NAME, null, values);
+        db.close();
+    }
+
+    private void prepareDataSemester() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.query(SEMESTER_TABLE_NAME, null, null, null, null, null, null);
+
+        if (cursor.getCount() == 0) {
+            insertSemester("2022-2023", 1);
+            insertSemester("2022-2023", 2);
+            insertSemester("2023-2024", 1);
+            insertSemester("2023-2024", 2);
+            insertSemester("2023-2024", 3);
+            insertSemester("2024-2025", 1);
+            insertSemester("2024-2025", 2);
+            insertSemester("2024-2025", 3);
+        }
+        cursor.close();
+    }
+
+    private void insertSemester(String name, int semester) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("semester", semester);
+        db.insert(SEMESTER_TABLE_NAME, null, values);
+        db.close();
+    }
+
+    private void prepareDataPoint() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.query(POINT_TABLE_NAME, null, null, null, null, null, null);
+        if (cursor.getCount() == 0) {
+            insertPoint(9, 10, 1, 1);
+            insertPoint(9.5, 9.5, 1, 2);
+            insertPoint(9, 10, 1, 3);
+            insertPoint(10, 9, 1, 4);
+            insertPoint(9, 9.5, 1, 5);
+
+            insertPoint(9, -1, 1, 6);
+            insertPoint(9.5, -1, 1, 7);
+            insertPoint(9, -1, 1, 8);
+            insertPoint(10, -1, 1, 9);
+            insertPoint(9, -1, 1, 10);
+        }
+        cursor.close();
+    }
+
+    private void insertPoint(double pointMid, double pointLast, int i1, int i2) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("pointMid", pointMid);
+        values.put("pointLast", pointLast);
+        values.put("studentId", i1);
+        values.put("timetableId", i2);
+        db.insert(POINT_TABLE_NAME, null, values);
+        db.close();
+    }
+
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + FACULTY_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + PROFESSOR_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + POINT_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + SEMESTER_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TIMETABLE_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + STUDENT_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + CLASS_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + ACCOUNT_TABLE_NAME);
         onCreate(db);
     }
 
-    public void insertStudent(String firstName, String lastName, int gender, int classId) {
+    public void insertStudent(int mssv, String firstName, String lastName, String numberPhone, int gender, int classId, int facultyId, Date birthday, Date joinDay) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put("id", mssv);
         values.put("firstName", firstName);
         values.put("lastName", lastName);
+        values.put("numberPhone", numberPhone);
         values.put("gender", gender);
         values.put("classId", classId);
+        values.put("facultyId", facultyId);
+        values.put("birthday", dateFormat.format(birthday));
+        values.put("joinDay", dateFormat.format(joinDay));
         db.insert(STUDENT_TABLE_NAME, null, values);
         db.close();
     }
@@ -194,12 +352,11 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void insertAccount(String username, String password, int studentId) {
+    public void insertAccount(int studentId, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("username", username);
-        values.put("password", password);
         values.put("studentId", studentId);
+        values.put("password", password);
         db.insert(ACCOUNT_TABLE_NAME, null, values);
         db.close();
     }
@@ -220,20 +377,20 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
         db.close();
     }
 
-    public int loginAccount(String username, String password) {
+    public int loginAccount(int mssv, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(
                 ACCOUNT_TABLE_NAME,
-                new String[]{"id", "username"},
-                "username = ? AND password = ?",
-                new String[]{username, password},
+                new String[]{"id", "studentId"},
+                "studentId = ? AND password = ?",
+                new String[]{String.valueOf(mssv), password},
                 null, null, null
         );
 
         int id = -1;
         if (cursor.moveToFirst()) {
-            String name = cursor.getString(cursor.getColumnIndexOrThrow("username"));
-            if (name.equals(username)) {
+            String name = cursor.getString(cursor.getColumnIndexOrThrow("studentId"));
+            if (name.equals(String.valueOf(mssv))) {
                 id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
             }
         }
@@ -260,7 +417,7 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void insertTimetable(String name, int professorId, int classId, String startAt, String endAt, int dayOfWeek, String roomName, String dateStart, String dateEnd) {
+    public void insertTimetable(String name, int professorId, int classId, String startAt, String endAt, int dayOfWeek, String roomName, String dateStart, String dateEnd, int semesterId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("name", name);
@@ -272,6 +429,7 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
         values.put("roomName", roomName);
         values.put("dateStart", dateStart);
         values.put("dateEnd", dateEnd);
+        values.put("semesterId", semesterId);
         db.insert(TIMETABLE_TABLE_NAME, null, values);
         db.close();
     }
@@ -326,18 +484,26 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
 
         Cursor cursor = db.query(
                 STUDENT_TABLE_NAME,
-                new String[]{"firstName", "lastName", "gender", "classId"},
+                new String[]{"firstName", "lastName", "numberPhone", "gender", "classId", "facultyId", "birthday", "joinDay"},
                 "id = ?",
                 new String[]{String.valueOf(id)},
                 null, null, null
         );
 
         if (cursor.moveToFirst()) {
-            student.setId(id);
-            student.setFirstName(cursor.getString(cursor.getColumnIndexOrThrow("firstName")));
-            student.setLastName(cursor.getString(cursor.getColumnIndexOrThrow("lastName")));
-            student.setGender(cursor.getInt(cursor.getColumnIndexOrThrow("gender")));
-            student.setClassId(cursor.getInt(cursor.getColumnIndexOrThrow("classId")));
+            try {
+                student.setId(id);
+                student.setFirstName(cursor.getString(cursor.getColumnIndexOrThrow("firstName")));
+                student.setLastName(cursor.getString(cursor.getColumnIndexOrThrow("lastName")));
+                student.setPhoneNumber(cursor.getString(cursor.getColumnIndexOrThrow("numberPhone")));
+                student.setGender(cursor.getInt(cursor.getColumnIndexOrThrow("gender")));
+                student.setClassId(cursor.getInt(cursor.getColumnIndexOrThrow("classId")));
+                student.setFacultyId(cursor.getInt(cursor.getColumnIndexOrThrow("facultyId")));
+                student.setBirthday(dateFormat.parse(cursor.getString(cursor.getColumnIndexOrThrow("birthday"))));
+                student.setJoinDay(dateFormat.parse(cursor.getString(cursor.getColumnIndexOrThrow("joinDay"))));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
 
         return student;
@@ -384,7 +550,6 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
     }
 
     public List<Timetable> getAllTimetable(int classId) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
         List<Timetable> timetableList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -409,6 +574,7 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
                     timetable.setRoomName(cursor.getString(cursor.getColumnIndexOrThrow("roomName")));
                     timetable.setDateStart(dateFormat.parse(cursor.getString(cursor.getColumnIndexOrThrow("dateStart"))));
                     timetable.setDateEnd(dateFormat.parse(cursor.getString(cursor.getColumnIndexOrThrow("dateEnd"))));
+                    timetable.setSemesterId(cursor.getInt(cursor.getColumnIndexOrThrow("semesterId")));
                     timetableList.add(timetable);
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -420,5 +586,115 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return timetableList;
+    }
+
+    public Timetable getTimetableById(int classId, int timetableId) {
+        List<Timetable> timetableList = this.getAllTimetable(classId);
+
+        for (Timetable timetable:
+             timetableList) {
+            if (timetable.getId() == timetableId) {
+                return timetable;
+            }
+        }
+        return null;
+    }
+
+    public List<Point> getAllPoint(int studentId) {
+        List<Point> pointList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(
+                POINT_TABLE_NAME,
+                null,
+                "studentId = ?",
+                new String[]{String.valueOf(studentId)},
+                null, null, null
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+                try {
+                    Point point = new Point();
+                    point.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                    point.setMidPoint(cursor.getFloat(cursor.getColumnIndexOrThrow("pointMid")));
+                    point.setLastPoint(cursor.getFloat(cursor.getColumnIndexOrThrow("pointLast")));
+                    point.setStudentId(cursor.getInt(cursor.getColumnIndexOrThrow("studentId")));
+                    point.setTimetableId(cursor.getInt(cursor.getColumnIndexOrThrow("timetableId")));
+                    pointList.add(point);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } while (cursor.moveToNext());
+        }
+
+        return pointList;
+    }
+
+    public Student getStudentById(int studentId) {
+        return this.getInfoStudentByID(studentId);
+    }
+
+    public List<String> getAllSemester() {
+        List<String> semesterList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(SEMESTER_TABLE_NAME, null, null, null, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                String name = "NH " + cursor.getString(cursor.getColumnIndexOrThrow("name")) + " - HK" + cursor.getString(cursor.getColumnIndexOrThrow("semester"));
+                semesterList.add(name);
+            } while (cursor.moveToNext());
+        }
+
+        return semesterList;
+    }
+
+    public List<Point> getAllPointBySemester(int studentId, int timetableId) {
+        List<Point> listPoint = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(
+                POINT_TABLE_NAME,
+                null,
+                "studentId = ? AND timetableId = ?",
+                new String[]{String.valueOf(studentId), String.valueOf(timetableId)},
+                null, null, null
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+                Point point = new Point();
+                point.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                point.setMidPoint(cursor.getFloat(cursor.getColumnIndexOrThrow("pointMid")));
+                point.setLastPoint(cursor.getFloat(cursor.getColumnIndexOrThrow("pointLast")));
+                point.setStudentId(cursor.getInt(cursor.getColumnIndexOrThrow("studentId")));
+                point.setTimetableId(cursor.getInt(cursor.getColumnIndexOrThrow("timetableId")));
+                listPoint.add(point);
+            } while (cursor.moveToNext());
+        }
+
+        return listPoint;
+    }
+
+    public Faculty getInfoFacultyByID(int facultyId) {
+        Faculty faculty = new Faculty();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(
+                FACULTY_TABLE_NAME,
+                new String[]{"name"},
+                "id = ?",
+                new String[]{String.valueOf(facultyId)},
+                null, null, null
+        );
+
+        if (cursor.moveToFirst()) {
+            faculty.setId(facultyId);
+            faculty.setName(cursor.getString(cursor.getColumnIndexOrThrow("name")));
+        }
+
+        return faculty;
     }
 }

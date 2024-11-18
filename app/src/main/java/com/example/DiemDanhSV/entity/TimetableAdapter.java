@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.DiemDanhSV.SinhVienSQLite;
 import com.example.lap23.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class TimetableAdapter extends RecyclerView.Adapter<TimetableAdapter.ClassViewHolder> {
@@ -37,6 +39,32 @@ public class TimetableAdapter extends RecyclerView.Adapter<TimetableAdapter.Clas
 
         holder.className.setText(subject.getName());
         holder.teacherName.setText(professor.getFullName());
+        holder.startAt.setText(subject.getStartAt());
+        holder.endAt.setText(subject.getEndAt());
+        holder.roomName.setText(subject.getRoomName());
+
+        int dayOfWeek = subject.getDayOfWeek();
+        String dayOfWeekString;
+        if (dayOfWeek == 1)
+            dayOfWeekString = "Thứ hai";
+        else if (dayOfWeek == 2)
+            dayOfWeekString = "Thứ ba";
+        else if (dayOfWeek == 3)
+            dayOfWeekString = "Thứ tư";
+        else if (dayOfWeek == 4)
+            dayOfWeekString = "Thứ năm";
+        else if (dayOfWeek == 5)
+            dayOfWeekString = "Thứ sáu";
+        else if (dayOfWeek == 6)
+            dayOfWeekString = "Thứ bảy";
+        else
+            dayOfWeekString = "Chủ nhật";
+
+        Date day = subject.getCurrentDayOfWeek();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String dateString = dateFormat.format(day);
+
+        holder.date.setText(dayOfWeekString + ", " + dateString);
     }
 
     @Override
@@ -45,12 +73,16 @@ public class TimetableAdapter extends RecyclerView.Adapter<TimetableAdapter.Clas
     }
 
     public static class ClassViewHolder extends RecyclerView.ViewHolder {
-        TextView className, teacherName;
+        TextView className, teacherName, startAt, endAt, roomName, date;
 
         public ClassViewHolder(View itemView) {
             super(itemView);
             className = itemView.findViewById(R.id.className);
             teacherName = itemView.findViewById(R.id.classDetails);
+            startAt = itemView.findViewById(R.id.timeStartAt);
+            endAt = itemView.findViewById(R.id.timeEndAt);
+            roomName = itemView.findViewById(R.id.roomName);
+            date = itemView.findViewById(R.id.date);
         }
     }
 }

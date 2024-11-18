@@ -13,9 +13,27 @@ public class Timetable {
     private String roomName;
     private Date dateStart;
     private Date dateEnd;
+    private int semesterId;
+    private Date currentDayOfWeek;
 
     public Timetable() {
 
+    }
+
+    public Date getCurrentDayOfWeek() {
+        return currentDayOfWeek;
+    }
+
+    public void setCurrentDayOfWeek(Date currentDayOfWeek) {
+        this.currentDayOfWeek = currentDayOfWeek;
+    }
+
+    public int getSemesterId() {
+        return semesterId;
+    }
+
+    public void setSemesterId(int semesterId) {
+        this.semesterId = semesterId;
     }
 
     public int getId() {

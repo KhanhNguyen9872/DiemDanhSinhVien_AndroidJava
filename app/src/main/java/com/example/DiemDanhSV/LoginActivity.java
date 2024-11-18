@@ -1,5 +1,6 @@
 package com.example.DiemDanhSV;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -7,11 +8,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.example.lap23.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -33,14 +34,26 @@ public class LoginActivity extends AppCompatActivity {
 
         EditText username = findViewById(R.id.username);
         EditText password = findViewById(R.id.password);
-        username.setText("root");
-        password.setText("root");
+        username.setText("22150129");
+        password.setText("khanhnguyen");
 
         //
         Button loginBtn = findViewById(R.id.btn_login);
 
         loginBtn.setOnClickListener(v -> {
-            int id = sinhVienSQLite.loginAccount(username.getText().toString(), password.getText().toString());
+            if (username.getText().toString().isEmpty() || password.getText().toString().isEmpty()) {
+                showOkDialog("Lỗi", "Vui lòng nhập đầy đủ thông tin");
+                return;
+            }
+
+            try {
+                Integer.parseInt(username.getText().toString());
+            } catch (Exception ex) {
+                showOkDialog("Lỗi", "MSSV phải là số");
+                return;
+            }
+
+            int id = sinhVienSQLite.loginAccount(Integer.parseInt(username.getText().toString()), password.getText().toString());
             if (id != -1) {
                 Toast toast = Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT);
                 toast.show();
@@ -49,9 +62,30 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             } else {
-                Toast toast = Toast.makeText(LoginActivity.this, "Đăng nhập thất bại", Toast.LENGTH_SHORT);
-                toast.show();
+                showOkDialog("Lỗi", "Tài khoản hoặc mật khẩu không đúng");
             }
         });
+    }
+
+    private void showOkDialog(String title, String msg) {
+        // Create AlertDialog builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // Set title and message
+        builder.setTitle(title);
+        builder.setMessage(msg);
+
+        // Set OK button
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Action when OK is clicked (dismiss the dialog)
+                dialog.dismiss();
+            }
+        });
+
+        // Create and show the dialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }
