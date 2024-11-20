@@ -10,6 +10,11 @@
         android:title="Kết quả học tập"
         />
     <item
+        android:id="@+id/toDoList"
+        android:icon="@drawable/ic_todolist"
+        android:title="To-do list"
+        />
+    <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/ic_profile"
         android:title="Sinh viên" />

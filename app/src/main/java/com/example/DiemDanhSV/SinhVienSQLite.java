@@ -12,6 +12,7 @@ import com.example.DiemDanhSV.entity.Point;
 import com.example.DiemDanhSV.entity.Professor;
 import com.example.DiemDanhSV.entity.Student;
 import com.example.DiemDanhSV.entity.Timetable;
+import com.example.DiemDanhSV.toDoList.ToDoListFragment;
 
 import java.sql.Time;
 import java.text.SimpleDateFormat;
@@ -38,6 +39,7 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
     private final String SEMESTER_TABLE_NAME = "semester";
     private final String FACULTY_TABLE_NAME = "faculty";
     private final String ROLLCALL_TABLE_NAME = "rollcall";
+    private final String TODO_LIST_TABLE_NAME = "todolist";
 
     private SinhVienSQLite(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -113,6 +115,14 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
                 "birthday DATE, " +
                 "joinDay DATE, " +
                 "FOREIGN KEY(classId) REFERENCES " + CLASS_TABLE_NAME + "(id));"
+        );
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TODO_LIST_TABLE_NAME + " (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "name TEXT, "  +
+                "studentId INTEGER, " +
+                "FOREIGN KEY(studentId) REFERENCES " + STUDENT_TABLE_NAME + "(id)" +
+                ");"
         );
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + POINT_TABLE_NAME + " (" +
@@ -252,9 +262,55 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
         prepareDataProfessor();
         prepareDataTimetable();
         prepareDataStudent();
+        prepareDataToDoList();
         prepareDataPoint();
         prepareDataAccount();
         prepareDataRollCall();
+    }
+
+    private void prepareDataToDoList() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.query(TODO_LIST_TABLE_NAME, null, null, null, null, null, null);
+
+        if (cursor.getCount() == 0) {
+//            insertToDoList("To do list", 1);
+        }
+        cursor.close();
+    }
+
+    public void insertToDoList(String toDoList, int studentId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", toDoList);
+        values.put("studentId", studentId);
+        db.insert(TODO_LIST_TABLE_NAME, null, values);
+        db.close();
+    }
+
+    public List<String> getToDoList(int studentId) {
+        List<String> toDoList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(
+                TODO_LIST_TABLE_NAME,
+                new String[]{"name"},
+                "studentId = ?",
+                new String[]{String.valueOf(studentId)},
+                null, null, null
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+                try {
+                    toDoList.add(cursor.getString(cursor.getColumnIndexOrThrow("name")));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return toDoList;
     }
 
     private void prepareDataRollCall() {
@@ -823,5 +879,11 @@ public class SinhVienSQLite extends SQLiteOpenHelper {
             }
         return false;
 
+    }
+
+    public void deleteToDoList(String task, int studentId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TODO_LIST_TABLE_NAME, "name = ? AND studentId = ?", new String[]{task, String.valueOf(studentId)});
+        db.close();
     }
 }

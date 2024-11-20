@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.DiemDanhSV.home.HomeFragment;
 import com.example.DiemDanhSV.ketQuaHocTap.KetQuaHocLapFragment;
 import com.example.DiemDanhSV.profile.ProfileFragment;
+import com.example.DiemDanhSV.toDoList.ToDoListFragment;
 import com.example.lap23.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -24,6 +25,7 @@ public class HomeActivity extends AppCompatActivity {
     private Fragment homeFragment;
     private Fragment profileFragment;
     private Fragment ketQuaHocTapFragment;
+    private Fragment toDoListFragment;
     private int accountId;
     private int studentId;
 
@@ -39,6 +41,7 @@ public class HomeActivity extends AppCompatActivity {
         homeFragment = new HomeFragment(this.accountId, this.studentId);
         profileFragment = new ProfileFragment(this.accountId, this.studentId);
         ketQuaHocTapFragment = new KetQuaHocLapFragment(this.accountId, this.studentId);
+        toDoListFragment = new ToDoListFragment(this.studentId);
 
         setContentView(R.layout.activity_homescreen);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -64,6 +67,10 @@ public class HomeActivity extends AppCompatActivity {
                 } else if (itemId == R.id.ketQuaHocTap) {
                     getSupportActionBar().setTitle("Kết quả học tập");
                     loadFragment(ketQuaHocTapFragment);
+                    return true;
+                } else if (itemId == R.id.toDoList) {
+                    getSupportActionBar().setTitle("To-do list");
+                    loadFragment(toDoListFragment);
                     return true;
                 }
                 return false;
